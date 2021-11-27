@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Google.Cloud.Vision.V1;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Octweet.ConsoleApp.Configuration;
 using Octweet.Core.Abstractions.Configuration;
 using Octweet.Core.Services;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Octweet.ConsoleApp
@@ -22,6 +23,16 @@ namespace Octweet.ConsoleApp
             var twitterService = serviceProvider.GetRequiredService<TwitterService>();
 
             var imageUrls = await twitterService.GetTweetIdsWithImages("#frontpages");
+            var googleVisionImages = imageUrls.Select(url => Image.FromUri(url));
+
+            var visionService = serviceProvider.GetRequiredService<GoogleVisionService>();
+
+
+            var ocrResults = await visionService.ImageAnnotatorClient.DetectTextAsync(googleVisionImages.First());
+            foreach (EntityAnnotation text in ocrResults)
+            {
+                Console.WriteLine($"Description: {text.Description}");
+            }
         }
 
         static IHostBuilder CreateHostBuilder(string[] args)
@@ -48,7 +59,15 @@ namespace Octweet.ConsoleApp
                         .Bind(twitterConfig);
                     serviceCollection.AddSingleton<TwitterClientConfig>(twitterConfig);
 
+                    // Load and inject Google client configuration
+                    GoogleClientConfig googleConfig = new();
+                    configurationRoot.GetSection("Google")
+                        .Bind(googleConfig);
+                    serviceCollection.AddSingleton<GoogleClientConfig>(googleConfig);
+
+                    // Register Core Services
                     serviceCollection.AddTransient<TwitterService>();
+                    serviceCollection.AddTransient<GoogleVisionService>();
                 });
         }
     }
