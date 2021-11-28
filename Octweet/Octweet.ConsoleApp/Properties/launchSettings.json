@@ -5,6 +5,9 @@
       "environmentVariables": {
         "NETCORE_ENVIRONMENT": "Development"
       }
+    },
+    "Docker": {
+      "commandName": "Docker"
     }
   }
 }

@@ -1,9 +1,11 @@
 ﻿using Google.Cloud.Vision.V1;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Octweet.Core.Abstractions.Configuration;
 using Octweet.Core.Services;
+using Octweet.Data;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +28,6 @@ namespace Octweet.ConsoleApp
             var googleVisionImages = imageUrls.Select(url => Image.FromUri(url));
 
             var visionService = serviceProvider.GetRequiredService<GoogleVisionService>();
-
 
             var ocrResults = await visionService.ImageAnnotatorClient.DetectTextAsync(googleVisionImages.First());
             foreach (EntityAnnotation text in ocrResults)
@@ -68,6 +69,10 @@ namespace Octweet.ConsoleApp
                     // Register Core Services
                     serviceCollection.AddTransient<TwitterService>();
                     serviceCollection.AddTransient<GoogleVisionService>();
+
+                    // Register EF
+                    serviceCollection.AddDbContext<OctweetDbContext>(
+                        options => options.UseSqlServer("name=ConnectionStrings:OctweetDB", b => b.MigrationsAssembly(typeof(Program).Assembly.FullName)));
                 });
         }
     }
