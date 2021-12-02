@@ -8,13 +8,10 @@ namespace Octweet.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<TweetMedia> builder)
         {
+            builder.Property(m => m.Id)
+                .ValueGeneratedOnAdd();
             builder
-                .HasKey(m => m.MediaKey);
-
-            builder
-                .HasOne<EntityAnnotation>(m => m.Annotation)
-                .WithOne(a => a.TweetMedia)
-                .HasForeignKey<EntityAnnotation>(a => a.MediaKey);
+                .HasKey(m => m.Id);
         }
     }
 }

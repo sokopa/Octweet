@@ -4,6 +4,7 @@ namespace Octweet.Data.Abstractions
 {
     public class TweetMedia
     {
+        public int Id { get; set; }
         public string TweetId { get; set; }
         public Tweet Tweet { get; set; }
         public string MediaKey { get; set; }
@@ -14,6 +15,5 @@ namespace Octweet.Data.Abstractions
         public DateTimeOffset? ProcessedAt { get; set; } = null; // defaults to null if not processed yet
 
         public int AnnotationId { get; set; }
-        public EntityAnnotation Annotation { get; set; }
     }
 }

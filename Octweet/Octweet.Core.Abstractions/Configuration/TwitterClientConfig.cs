@@ -7,5 +7,8 @@
         public string BearerToken  { get; set; }
         public string AccessToken { get; set; }
         public string AccessTokenSecret { get; set; }
+
+        public string Query { get; set; }
+        public int PollingPeriodInSeconds { get; set; }
     }
 }

@@ -10,6 +10,36 @@ namespace Octweet.ConsoleApp.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "EntityAnnotations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TweetMediaId = table.Column<int>(type: "int", nullable: false),
+                    Locale = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EntityAnnotations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QueryLog",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Query = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LatestTweetId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LatestExecution = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QueryLog", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tweets",
                 columns: table => new
                 {
@@ -28,8 +58,10 @@ namespace Octweet.ConsoleApp.Migrations
                 name: "TweetsMedia",
                 columns: table => new
                 {
-                    MediaKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TweetId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MediaKey = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Width = table.Column<int>(type: "int", nullable: false),
@@ -39,7 +71,7 @@ namespace Octweet.ConsoleApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TweetsMedia", x => x.MediaKey);
+                    table.PrimaryKey("PK_TweetsMedia", x => x.Id);
                     table.ForeignKey(
                         name: "FK_TweetsMedia_Tweets_TweetId",
                         column: x => x.TweetId,
@@ -47,33 +79,6 @@ namespace Octweet.ConsoleApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "EntityAnnotations",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MediaKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Locale = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EntityAnnotations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_EntityAnnotations_TweetsMedia_MediaKey",
-                        column: x => x.MediaKey,
-                        principalTable: "TweetsMedia",
-                        principalColumn: "MediaKey",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EntityAnnotations_MediaKey",
-                table: "EntityAnnotations",
-                column: "MediaKey",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_TweetsMedia_TweetId",
@@ -85,6 +90,9 @@ namespace Octweet.ConsoleApp.Migrations
         {
             migrationBuilder.DropTable(
                 name: "EntityAnnotations");
+
+            migrationBuilder.DropTable(
+                name: "QueryLog");
 
             migrationBuilder.DropTable(
                 name: "TweetsMedia");

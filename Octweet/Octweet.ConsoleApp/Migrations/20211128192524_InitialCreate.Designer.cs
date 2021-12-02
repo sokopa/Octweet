@@ -12,7 +12,7 @@ using Octweet.Data;
 namespace Octweet.ConsoleApp.Migrations
 {
     [DbContext(typeof(OctweetDbContext))]
-    [Migration("20211128104054_InitialCreate")]
+    [Migration("20211128192524_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,16 +40,36 @@ namespace Octweet.ConsoleApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MediaKey")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("TweetMediaId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MediaKey")
-                        .IsUnique();
-
                     b.ToTable("EntityAnnotations");
+                });
+
+            modelBuilder.Entity("Octweet.Data.Abstractions.QueryLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("LatestExecution")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LatestTweetId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Query")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QueryLog");
                 });
 
             modelBuilder.Entity("Octweet.Data.Abstractions.Tweet", b =>
@@ -79,14 +99,21 @@ namespace Octweet.ConsoleApp.Migrations
 
             modelBuilder.Entity("Octweet.Data.Abstractions.TweetMedia", b =>
                 {
-                    b.Property<string>("MediaKey")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("AnnotationId")
                         .HasColumnType("int");
 
                     b.Property<int>("Height")
                         .HasColumnType("int");
+
+                    b.Property<string>("MediaKey")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTimeOffset?>("ProcessedAt")
                         .HasColumnType("datetimeoffset");
@@ -106,22 +133,11 @@ namespace Octweet.ConsoleApp.Migrations
                     b.Property<int>("Width")
                         .HasColumnType("int");
 
-                    b.HasKey("MediaKey");
+                    b.HasKey("Id");
 
                     b.HasIndex("TweetId");
 
                     b.ToTable("TweetsMedia");
-                });
-
-            modelBuilder.Entity("Octweet.Data.Abstractions.EntityAnnotation", b =>
-                {
-                    b.HasOne("Octweet.Data.Abstractions.TweetMedia", "TweetMedia")
-                        .WithOne("Annotation")
-                        .HasForeignKey("Octweet.Data.Abstractions.EntityAnnotation", "MediaKey")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("TweetMedia");
                 });
 
             modelBuilder.Entity("Octweet.Data.Abstractions.TweetMedia", b =>
@@ -138,12 +154,6 @@ namespace Octweet.ConsoleApp.Migrations
             modelBuilder.Entity("Octweet.Data.Abstractions.Tweet", b =>
                 {
                     b.Navigation("Media");
-                });
-
-            modelBuilder.Entity("Octweet.Data.Abstractions.TweetMedia", b =>
-                {
-                    b.Navigation("Annotation")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
