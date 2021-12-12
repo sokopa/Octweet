@@ -9,6 +9,12 @@ services:
       MYSQL_ROOT_PASSWORD : "SuperSecretPassword@123"
     volumes:
       - dbdata:/var/lib/mysql
+  seq:
+    image: "datalust/seq"
+    ports:
+      - "5341:80"
+    environment:
+      ACCEPT_EULA : "y"
 
 volumes:
   dbdata:

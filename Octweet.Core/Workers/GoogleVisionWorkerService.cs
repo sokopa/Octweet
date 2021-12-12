@@ -31,7 +31,6 @@ namespace Octweet.Core.Workers
             _logger.LogInformation("Google Vision Worker Service is running.");
 
             _timer = new Timer(ExecuteTask, null, _timerPeriod, TimeSpan.FromMilliseconds(-1));
-
             // also immediately execute on startup
             ExecuteTask(null);
 
