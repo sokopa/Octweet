@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Google.Cloud.Vision.V1;
 using Microsoft.Extensions.Logging;
@@ -52,16 +53,30 @@ namespace Octweet.Core.Services
             foreach (var media in pendingMedia)
             {
                 var img = Image.FromUri(media.Url);
-                var ocrResults = await ImageAnnotatorClient.DetectTextAsync(img);
-                // store the first result only (the full text summary)
-                var result = ocrResults.FirstOrDefault();
-                var annotation = new Data.Abstractions.EntityAnnotation
+                try
                 {
-                    Description = result.Description,
-                    Locale = result.Locale,
-                    TweetMediaId = media.Id,
-                };
-                await _annotationRepository.SaveAnnotationResults(annotation);
+                    var ocrResults = await ImageAnnotatorClient.DetectDocumentTextAsync(img);
+                    // store the first result only (the full text summary)
+                    var result = ocrResults.Pages;
+                    var allText = ocrResults.Text;
+                    var detectedLanguage = result.First().Property.DetectedLanguages.FirstOrDefault();
+                    var annotation = new Data.Abstractions.EntityAnnotation
+                    {
+                        Description = allText,
+                        Locale = detectedLanguage.LanguageCode,
+                        TweetMediaId = media.Id,
+                    };
+
+                    await _annotationRepository.SaveAnnotationResults(annotation);
+                }
+                catch(AnnotateImageException ex)
+                {
+                    _logger?.LogError(ex, "Error in Google Vision Annotation");
+                }
+                catch(Exception ex)
+                {
+                    _logger?.LogError(ex, "Error in Google Vision Service");
+                }
             }
         }
     }
