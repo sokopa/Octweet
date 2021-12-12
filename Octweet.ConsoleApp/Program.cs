@@ -20,24 +20,6 @@ namespace Octweet.ConsoleApp
         {
             using IHost host = CreateHostBuilder(args).Build();           
             await host.RunAsync();
-
-            //using IServiceScope serviceScope = host.Services.CreateScope();
-            //IServiceProvider serviceProvider = serviceScope.ServiceProvider;
-            //// Construct twitter client from DI
-            //var twitterService = serviceProvider.GetRequiredService<ITwitterService>();
-
-            //await twitterService.QueryLatestTweets();
-
-            //Console.ReadKey();
-            //var googleVisionImages = imageUrls.Select(url => Image.FromUri(url));
-
-            //var visionService = serviceProvider.GetRequiredService<GoogleVisionService>();
-
-            //var ocrResults = await visionService.ImageAnnotatorClient.DetectTextAsync(googleVisionImages.First());
-            //foreach (EntityAnnotation text in ocrResults)
-            //{
-            //    Console.WriteLine($"Description: {text.Description}");
-            //}
         }
 
         static IHostBuilder CreateHostBuilder(string[] args)
@@ -77,7 +59,7 @@ namespace Octweet.ConsoleApp
                     // Register Core Services
 
                     serviceCollection.AddCoreServices();
-                    serviceCollection.AddDataServices("name=ConnectionStrings:OctweetDB", typeof(Program).Assembly.FullName);
+                    serviceCollection.AddDataServices(configurationRoot.GetConnectionString("OctweetDB"), typeof(Program).Assembly.FullName);
                 })
                 .UseSerilog();
         }

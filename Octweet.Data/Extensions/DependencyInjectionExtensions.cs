@@ -7,13 +7,11 @@ namespace Octweet.Data.Extensions
 {
     public static class DependencyInjectionExtensions 
     {
-        public static IServiceCollection AddDataServices(this IServiceCollection services, string connStringName, string assemblyName)
+        public static IServiceCollection AddDataServices(this IServiceCollection services, string connString, string assemblyName)
         {
             services.AddDbContext<OctweetDbContext>(
-                        options => options
-                            .UseSqlServer(connStringName,b => b.MigrationsAssembly(assemblyName))
-                            .EnableSensitiveDataLogging()
-                        , ServiceLifetime.Transient);
+                        options => options.UseMySql(connString, ServerVersion.AutoDetect(connString), sql => sql.MigrationsAssembly(assemblyName)),
+                        ServiceLifetime.Transient);
 
             services.AddScoped<ITweetRepository, TweetRepository>();
             services.AddScoped<IAnnotationRepository, AnnotationRepository>();

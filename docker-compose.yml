@@ -7,3 +7,8 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD : "SuperSecretPassword@123"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:

@@ -9,13 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octweet.Core.Abstractions",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octweet.ConsoleApp", "Octweet.ConsoleApp\Octweet.ConsoleApp.csproj", "{2348758E-9D63-4966-AEE5-0691FD0ECD6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octweet.Data", "Octweet.Data\Octweet.Data.csproj", "{EB699D61-8FB2-44B7-9371-34BB7C2B6697}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octweet.Data", "Octweet.Data\Octweet.Data.csproj", "{EB699D61-8FB2-44B7-9371-34BB7C2B6697}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Octweet.Data.Abstractions", "Octweet.Data.Abstractions\Octweet.Data.Abstractions.csproj", "{0D2797FE-16FB-4191-8845-9F5B52305CD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Octweet.Data.Abstractions", "Octweet.Data.Abstractions\Octweet.Data.Abstractions.csproj", "{0D2797FE-16FB-4191-8845-9F5B52305CD6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution FIles", "Solution FIles", "{B9E6BF5D-55F7-4EDC-97E6-6715B94158FC}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global

@@ -22,6 +22,7 @@ namespace Octweet.Data.Repositories
             var tweets = await _context.TweetsMedia
                 .Where(m => m.ProcessedAt == null)
                 .AsNoTracking()
+                .OrderBy(m => m.Id)
                 .Take(batchSize)
                 .ToListAsync();
 
