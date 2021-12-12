@@ -33,13 +33,6 @@ namespace Octweet.Core.Services
             _annotationRepository = annotationRepository;
             _logger = logger;
         }
-        
-        //var googleVisionImages = imageUrls.Select(url => Image.FromUri(url));
-        //var ocrResults = await visionService.ImageAnnotatorClient.DetectTextAsync(googleVisionImages.First());
-        //foreach (EntityAnnotation text in ocrResults)
-        //{
-        //    Console.WriteLine($"Description: {text.Description}");
-        //}
 
         public async Task AnnotatePendingTweetMedia()
         {
