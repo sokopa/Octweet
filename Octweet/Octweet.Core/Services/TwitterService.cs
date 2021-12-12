@@ -62,11 +62,20 @@ namespace Octweet.Core.Services
                 parameters.SinceId = latestExecutionForQuery.LatestTweetId;
                 _logger.LogDebug("Already fetched tweets up to {tweetId}. Using SinceId.", latestExecutionForQuery.LatestTweetId);
             }
-            SearchTweetsV2Response tweetsV2Response = null;
+
+            List<SearchTweetsV2Response> tweetResponsePages = new List<SearchTweetsV2Response>();
             try
             {
-                tweetsV2Response = await TwitterClient.SearchV2.SearchTweetsAsync(parameters);
-                _logger.LogDebug("Query returned {count} tweets", tweetsV2Response.Tweets.Count());
+                var pagingSearchIterator = TwitterClient.SearchV2.GetSearchTweetsV2Iterator(parameters);
+
+                int pageIndex = 0;
+                while (!pagingSearchIterator.Completed)
+                {
+                    _logger.LogInformation("Processing page {page}...", ++pageIndex);
+                    var page = await pagingSearchIterator.NextPageAsync();
+                    _logger.LogDebug("Query for page {page} returned {count} tweets", pageIndex, page.Content.Tweets.Count());
+                    tweetResponsePages.Add(page.Content);
+                }
             }
             catch (Exception ex)
             {
@@ -74,12 +83,12 @@ namespace Octweet.Core.Services
                 throw;
             }
 
-            if (tweetsV2Response.Tweets.Count() == 0) 
+            if (!tweetResponsePages.Any() || tweetResponsePages.FirstOrDefault().Tweets.Count() == 0) 
                 return;
 
-            var latestTweetId = tweetsV2Response.Tweets.OrderByDescending(t => t.CreatedAt).First().Id;
+            var latestTweetId = tweetResponsePages.SelectMany(i => i.Tweets).OrderByDescending(t => t.CreatedAt).First().Id;
             
-            var tweetsToSave = MapToTweetModel(tweetsV2Response);
+            var tweetsToSave = MapToTweetModel(tweetResponsePages);
 
             try
             {
@@ -105,41 +114,42 @@ namespace Octweet.Core.Services
             await _queryLogRepository.InsertOrUpdateQueryLog(latestExecutionForQuery);
         }
 
-        private IEnumerable<Octweet.Data.Abstractions.Tweet> MapToTweetModel(SearchTweetsV2Response response)
+        private IEnumerable<Octweet.Data.Abstractions.Tweet> MapToTweetModel(IEnumerable<SearchTweetsV2Response> responses)
         {
-            foreach (var tweet in response.Tweets)
-            {
-                if (tweet.Attachments == null || tweet.Attachments.MediaKeys.Length == 0)
+            foreach (var response in responses)
+                foreach (var tweet in response.Tweets)
                 {
-                    continue;
+                    if (tweet.Attachments == null || tweet.Attachments.MediaKeys.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    var keys = tweet.Attachments.MediaKeys;
+                    var media = response.Includes.Media
+                        .Where(m => m.Type == "photo")
+                        .Where(m => keys.Contains(m.MediaKey));
+
+                    var mappedTweet = new Data.Abstractions.Tweet
+                    {
+                        Id = tweet.Id,
+                        CreatedAt = tweet.CreatedAt,
+                        AuthorId = tweet.AuthorId,
+                        Language = tweet.Lang,
+                        Text = tweet.Text
+                    };
+                    var mappedMedia = media.Select(m => new Data.Abstractions.TweetMedia
+                    {
+                        Height = m.Height,
+                        Width = m.Width,
+                        MediaKey = m.MediaKey,
+                        Tweet = mappedTweet,
+                        Type = m.Type,
+                        Url = m.Url
+                    }).ToList();
+                    mappedTweet.Media = mappedMedia;
+
+                    yield return mappedTweet;
                 }
-
-                var keys = tweet.Attachments.MediaKeys;
-                var media = response.Includes.Media
-                    .Where(m => m.Type == "photo")
-                    .Where(m => keys.Contains(m.MediaKey));
-
-                var mappedTweet = new Data.Abstractions.Tweet
-                {
-                    Id = tweet.Id,
-                    CreatedAt = tweet.CreatedAt,
-                    AuthorId = tweet.AuthorId,
-                    Language = tweet.Lang,
-                    Text = tweet.Text
-                };
-                var mappedMedia = media.Select(m => new Data.Abstractions.TweetMedia
-                {
-                    Height = m.Height,
-                    Width = m.Width,
-                    MediaKey = m.MediaKey,
-                    Tweet = mappedTweet,
-                    Type = m.Type,
-                    Url = m.Url
-                }).ToList();
-                mappedTweet.Media = mappedMedia;
-
-                yield return mappedTweet;
-            }
         }
     }
 }
