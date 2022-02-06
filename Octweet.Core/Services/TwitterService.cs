@@ -80,8 +80,9 @@ namespace Octweet.Core.Services
                 {
                     _logger.LogInformation("Processing page {page}...", ++pageIndex);
                     var page = await pagingSearchIterator.NextPageAsync();
-                    _logger.LogDebug("Query for page {page} returned {count} tweets", pageIndex, page.Content.Tweets.Count());
+                    _logger.LogInformation("Query for page {page} returned {count} tweets", pageIndex, page.Content.Tweets.Count());
                     tweetResponsePages.Add(page.Content);
+                    _logger.LogInformation("Processing page {page}... Complete!", pageIndex);
                 }
             }
             catch (Exception ex)
@@ -100,6 +101,7 @@ namespace Octweet.Core.Services
             try
             {
                 await _tweetRepository.SaveTweets(tweetsToSave);
+                _logger.LogInformation($"Saved {tweetsToSave.Count()} tweets");
             }
             catch(Exception ex)
             {
@@ -118,6 +120,7 @@ namespace Octweet.Core.Services
             latestExecutionForQuery.LatestTweetId = latestTweetId;
             latestExecutionForQuery.LatestExecution = DateTime.UtcNow;
 
+            _logger.LogInformation("Inserting Execution log: {@LatestExecution}", latestExecutionForQuery);
             await _queryLogRepository.InsertOrUpdateQueryLog(latestExecutionForQuery);
         }
 

@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
-using Google.Cloud.Vision.V1;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Octweet.Core.Abstractions.Configuration;
-using Octweet.Core.Abstractions.Services;
 using Octweet.Core.Extensions;
-using Octweet.Core.Services;
 using Octweet.Data.Extensions;
+using Octweet.Data;
 using Serilog;
 
 namespace Octweet.ConsoleApp
@@ -18,7 +15,11 @@ namespace Octweet.ConsoleApp
     {
         static async Task Main(string[] args)
         {
-            using IHost host = CreateHostBuilder(args).Build();           
+            using IHost host = CreateHostBuilder(args).Build();
+
+            var dbContext = host.Services.GetRequiredService<OctweetDbContext>();
+            dbContext.Database.EnsureCreated();
+
             await host.RunAsync();
         }
 

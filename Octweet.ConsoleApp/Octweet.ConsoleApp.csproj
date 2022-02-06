@@ -3,8 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-	<UserSecretsId>3227C527-05F1-47E3-A7E7-D63AF44D1D74</UserSecretsId>
-	<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+	  <UserSecretsId>3227C527-05F1-47E3-A7E7-D63AF44D1D74</UserSecretsId>
+	  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>

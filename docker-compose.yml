@@ -1,20 +1,34 @@
 ﻿version: "3.9"
 
 services:
+  app:
+    build: .
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - /c/vision-project-331918-0b70b72f2f07.json:/tmp/keys/googlecredential.json:ro
+    network_mode: host
   db:
     image: "mysql:8.0.27"
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD : "SuperSecretPassword@123"
+      MYSQL_ROOT_PASSWORD : "${MYSQL_ROOT_PASSWORD}"
     volumes:
       - dbdata:/var/lib/mysql
+    cap_add:
+      - SYS_NICE
   seq:
     image: "datalust/seq"
     ports:
       - "5341:80"
     environment:
       ACCEPT_EULA : "y"
+    volumes:
+      - logdata:/data
 
 volumes:
   dbdata:
+  logdata:

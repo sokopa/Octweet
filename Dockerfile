@@ -8,8 +8,11 @@ WORKDIR /src
 COPY ["Octweet.ConsoleApp/Octweet.ConsoleApp.csproj", "Octweet.ConsoleApp/"]
 COPY ["Octweet.Core.Abstractions/Octweet.Core.Abstractions.csproj", "Octweet.Core.Abstractions/"]
 COPY ["Octweet.Core/Octweet.Core.csproj", "Octweet.Core/"]
+COPY ["Octweet.Data.Abstractions/Octweet.Data.Abstractions.csproj", "Octweet.Data.Abstractions/"]
+COPY ["Octweet.Data/Octweet.Data.csproj", "Octweet.Data/"]
 RUN dotnet restore "Octweet.ConsoleApp/Octweet.ConsoleApp.csproj"
 COPY . .
+RUN chmod +x ./devops/wait-for-it.sh ./devops/docker-entrypoint.sh
 WORKDIR "/src/Octweet.ConsoleApp"
 RUN dotnet build "Octweet.ConsoleApp.csproj" -c Release -o /app/build
 
@@ -19,4 +22,6 @@ RUN dotnet publish "Octweet.ConsoleApp.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Octweet.ConsoleApp.dll"]
+COPY ./devops /app/devops
+ENTRYPOINT ["/app/devops/docker-entrypoint.sh"]
+CMD ["dotnet", "Octweet.ConsoleApp.dll"]
