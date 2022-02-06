@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Octweet.Data;
 
@@ -10,9 +11,10 @@ using Octweet.Data;
 namespace Octweet.ConsoleApp.Migrations
 {
     [DbContext(typeof(OctweetDbContext))]
-    partial class OctweetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220202211606_AnnotationContainsTextFlag")]
+    partial class AnnotationContainsTextFlag
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

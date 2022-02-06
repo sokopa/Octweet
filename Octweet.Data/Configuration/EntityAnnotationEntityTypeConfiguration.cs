@@ -10,6 +10,8 @@ namespace Octweet.Data.Configuration
         {
             builder.Property(m => m.Id)
                 .ValueGeneratedOnAdd();
+            builder.Property(m => m.ContainsText)
+                .HasDefaultValue(true);
             builder
                 .HasKey(m => m.Id);
         }

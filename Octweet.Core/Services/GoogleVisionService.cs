@@ -42,23 +42,27 @@ namespace Octweet.Core.Services
                 _logger.LogInformation("No pending tweets needing OCR found.");
                 return;
             }
+            var runDescription = $"{pendingMedia.FirstOrDefault().Id}-{pendingMedia.LastOrDefault().Id}";
 
+            _logger.LogInformation($"Start processing {pendingMedia.Count()} pending media images. Batch: {runDescription}");
+            Data.Abstractions.EntityAnnotation annotation = null;
             foreach (var media in pendingMedia)
             {
                 var img = Image.FromUri(media.Url);
                 try
                 {
+
                     var ocrResults = await ImageAnnotatorClient.DetectDocumentTextAsync(img);
-                    // store the first result only (the full text summary)
-                    var result = ocrResults.Pages;
-                    var allText = ocrResults.Text;
-                    var detectedLanguage = result.First().Property.DetectedLanguages.FirstOrDefault();
-                    var annotation = new Data.Abstractions.EntityAnnotation
+                    
+                    if (ocrResults == null)
                     {
-                        Description = allText,
-                        Locale = detectedLanguage.LanguageCode,
-                        TweetMediaId = media.Id,
-                    };
+                        // no text exists in the image
+                        annotation = CreateNoTextAnnotation(media.Id);
+                    }
+                    else
+                    {
+                        annotation = CreateAnnotationFromOcrResult(media.Id, ocrResults);
+                    }
 
                     await _annotationRepository.SaveAnnotationResults(annotation);
                 }
@@ -71,6 +75,36 @@ namespace Octweet.Core.Services
                     _logger?.LogError(ex, "Error in Google Vision Service");
                 }
             }
+            _logger.LogInformation($"Done processing {pendingMedia.Count()} pending media images. Batch: {runDescription}");
+        }
+
+        private Data.Abstractions.EntityAnnotation CreateAnnotationFromOcrResult(int tweetMediaId, TextAnnotation textAnnotation)
+        {
+            // store the first result only (the full text summary)
+            var result = textAnnotation.Pages;
+            var allText = textAnnotation.Text;
+            var detectedLanguage = result.First().Property.DetectedLanguages.FirstOrDefault();
+            var annotation = new Data.Abstractions.EntityAnnotation
+            {
+                Description = allText,
+                Locale = detectedLanguage.LanguageCode,
+                TweetMediaId = tweetMediaId,
+                ContainsText = true
+            };
+            return annotation;
+        }
+
+        private Data.Abstractions.EntityAnnotation CreateNoTextAnnotation(int tweetMediaId, string description = null)
+        {
+            description = description ?? "No text detected";
+            var annotation = new Data.Abstractions.EntityAnnotation
+            {
+                Description = description,
+                Locale = "en",
+                TweetMediaId = tweetMediaId,
+                ContainsText = false
+            };
+            return annotation;
         }
     }
 }
