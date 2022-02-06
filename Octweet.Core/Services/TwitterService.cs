@@ -57,10 +57,17 @@ namespace Octweet.Core.Services
 
             // logic to only fetch new tweets after each run
             var latestExecutionForQuery = await _queryLogRepository.GetLatestExecution(queryToExecute);
+            
             if (latestExecutionForQuery != null)
             {
-                parameters.SinceId = latestExecutionForQuery.LatestTweetId;
-                _logger.LogDebug("Already fetched tweets up to {tweetId}. Using SinceId.", latestExecutionForQuery.LatestTweetId);
+                // twitter API has access to latest 7 days only. check if that tweet is older than 7 days.
+                var tweet = await _tweetRepository.GetTweetById(latestExecutionForQuery.LatestTweetId);
+                var earliestTimeWeCanQuery = DateTime.UtcNow.AddDays(-7).AddHours(1);
+                if (tweet.CreatedAt > earliestTimeWeCanQuery)
+                {
+                    parameters.SinceId = latestExecutionForQuery.LatestTweetId;
+                    _logger.LogDebug("Already fetched tweets up to {tweetId}. Using SinceId.", latestExecutionForQuery.LatestTweetId);
+                }
             }
 
             List<SearchTweetsV2Response> tweetResponsePages = new List<SearchTweetsV2Response>();

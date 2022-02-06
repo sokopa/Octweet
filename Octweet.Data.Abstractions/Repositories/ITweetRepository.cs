@@ -9,6 +9,7 @@ namespace Octweet.Data.Abstractions.Repositories
     {
         Task SaveTweets(IEnumerable<Tweet> tweets);
         Task<IEnumerable<TweetMedia>> FetchUnprocessedTweetMedia(int batchSize);
+        Task<Tweet> GetTweetById(string tweetId);
     }
 
     public interface IAnnotationRepository

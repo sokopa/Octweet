@@ -34,5 +34,11 @@ namespace Octweet.Data.Repositories
             await _context.Tweets.AddRangeAsync(tweets);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Tweet> GetTweetById(string tweetId)
+        {
+            var tweet = await _context.Tweets.FindAsync(tweetId);
+            return tweet;
+        }
     }
 }
