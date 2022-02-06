@@ -9,6 +9,7 @@ This application contacts the `Twitter API` and `Google Vision API`. You will ne
 
 You can access the following pages in order to see more thorough guides on how to create your credentials for each service:
  - [Twitter](/docs/twitter.md)
+ - [Google Cloud Vision](/docs/google.md)
 
 ### Prerequisites 
 
