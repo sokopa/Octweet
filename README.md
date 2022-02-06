@@ -1,9 +1,16 @@
 # Octweet
-Project repo for Modern Web Applications Post-grad Technoeconomics course - 2021
+Project repo for Modern Web Applications Post-grad Technoeconomics course - 2021/2022
 
 ## Setting Up
 
-### Prerequisites
+### API Credentials
+
+This application contacts the `Twitter API` and `Google Vision API`. You will need your own credentials in order to access these APIs using this application.
+
+You can access the following pages in order to see more thorough guides on how to create your credentials for each service:
+ - [Twitter](/docs/twitter.md)
+
+### Prerequisites 
 
 - Docker
 - Visual Studio, VS Code, or Rider installed
