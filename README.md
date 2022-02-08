@@ -11,6 +11,55 @@ You can access the following pages in order to see more thorough guides on how t
  - [Twitter](/docs/twitter.md)
  - [Google Cloud Vision](/docs/google.md)
 
+### Prerequisites
+
+In order to run the application, you will need:
+- Docker to be installed
+- Credentials for Twitter API and Google Vision API from the section [above](/README.md#api-credentials)
+
+The application is packaged along with a MySQL database and a structured logging service in a Docker Compose file, which accepts configuration in a `.env` file in the root folder of the repository. 
+
+There is a `sample.env` file containing the needed configuration that needs to be updated before running. You can make a copy of this file and rename it to `.env`, and follow the guidance inside it to properly set it up:
+
+```sh
+# replace {DB_PASSWORD} with a password of your choosing. Make sure they match in the below two lines.
+MYSQL_ROOT_PASSWORD={DB_PASSWORD}
+ConnectionStrings__OctweetDB=Server=127.0.0.1;Database=OctweetDB;Uid=root;Pwd={DB_PASSWORD};
+
+# replace {REPLACE_JSON_PATH} with the path of your Google credentials JSON file.
+# for Windows users: set this to a similar format like /c/path/file.json
+GOOGLE_CREDENTIALS_JSON_PATH={REPLACE_JSON_PATH}
+
+# replace the following values with the actual values of your Twitter application
+Twitter__ApiKey={REPLACE_APIKEY}
+Twitter__ApiSecret={REPLACE_APISECRET}
+Twitter__BearerToken={REPLACE_BEARERTOKEN}
+
+# this is the current configuration for the search that the application will perform. (tweets from account @ukpapers)
+# you can uncomment the below line and specify your query.
+# Twitter__Query=from:ukpapers
+
+# leave the below lines as-is
+DB_HOST=127.0.0.1
+NETCORE_ENVIRONMENT=Staging
+Google__VisionCredentialsPath=/tmp/keys/googlecredential.json
+```
+
+Now that you have your `.env` file setup, it's time to spin up the application.
+
+From the root folder of the repository, execute `docker-compose up` in your favorite terminal. 
+
+This will start:
+- a container running a MySQL DB instance inside the Docker container
+- a container running a Seq service instance which will collect and display the application's logs in a structured format
+- a container running an `Octweet` application instance
+
+The database and the logs service are set up in the docker-compose file in such a way that their data will be retained upon restarts.
+
+To stop the containers, you can type `Ctrl-C` in the terminal.
+
+--- 
+this will be rewritten
 ### Prerequisites 
 
 - Docker

@@ -8,7 +8,7 @@ services:
     depends_on:
       - db
     volumes:
-      - /c/vision-project-331918-0b70b72f2f07.json:/tmp/keys/googlecredential.json:ro
+      - ${GOOGLE_CREDENTIALS_JSON_PATH}:/tmp/keys/googlecredential.json:ro
     network_mode: host
   db:
     image: "mysql:8.0.27"
