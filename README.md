@@ -71,6 +71,12 @@ To stop the containers, you can type `Ctrl-C` in the terminal.
 
 ---
 
+## :floppy_disk: Database
+
+For more information about the Database schema and the method used, you can refer to [Database Docs](docs/database.md)
+
+---
+
 ## :wrench: Technologies used
 
 The application is written in [C#](https://docs.microsoft.com/en-us/dotnet/csharp/), with [.NET 6](https://docs.microsoft.com/en-us/dotnet/).
