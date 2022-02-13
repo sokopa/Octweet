@@ -2,7 +2,7 @@
 
 The actual application is written in C# language, on top of Microsoft's .NET platform, specifically .NET 6.
 
-It is a console application that can run indefinetely and consists of two separate [Woker Services](https://docs.microsoft.com/en-us/dotnet/core/extensions/workers). The approach was chosen as the work needed to be done doesn't involve a user inferface (UI), and we would like a long-running service that can be fired and process data in the background. It is in an extensible service in the .NET ecosystem that leverages all the useful features, like logging, configuration, and dependency injection (DI).
+It is a console application that can run indefinetely and consists of two separate [Worker Services](https://docs.microsoft.com/en-us/dotnet/core/extensions/workers). The approach was chosen as the work needed to be done doesn't involve a user inferface (UI), and we would like a long-running service that can be fired and process data in the background. It is in an extensible service in the .NET ecosystem that leverages all the useful features, like logging, configuration, and dependency injection (DI).
 
 ## Architecture
 

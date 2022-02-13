@@ -75,7 +75,7 @@ To stop the containers, you can type `Ctrl-C` in the terminal.
 
 For more information about the Database schema and the method used, you can refer to [Database Docs](docs/database.md)
 
-For more information about the application's structure and the architecture, you can refer to [Application](docs/application.md)
+For more information about the application's structure and the architecture, you can refer to [Application Docs](docs/application.md)
 
 ---
 
