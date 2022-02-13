@@ -79,3 +79,7 @@ This supports a mechanism that is implemented in the application that makes it i
 | Query | longtext | NO |  |
 | LatestTweetId | longtext | NO |  |
 | LatestExecution | datetime(6) | NO |  |
+
+---
+
+[Go back to main Readme file](/README.md)
