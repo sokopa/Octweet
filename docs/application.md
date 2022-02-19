@@ -6,7 +6,7 @@ It is a console application that can run indefinetely and consists of two separa
 
 ## Architecture
 
-The application is constructed using N-Tier architecture, with the `Octweet.ConsoleApp` acting as the presentation layer and the host of the application. In `Octweet.Core` libary we can find all the actual Business layer related implementations, and in the `Octweet.Data` libraray we will find all the database-related code.
+The application is constructed using N-Tier architecture, with the `Octweet.ConsoleApp` acting as the presentation layer and the host of the application. In `Octweet.Core` libary we can find all the actual Business layer related implementations, and in the `Octweet.Data` library we will find all the database-related code.
 
 The `Octweet.ConsoleApp` acts as the dependencies registration container and loads the application configuration.
 
